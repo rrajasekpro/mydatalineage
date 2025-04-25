@@ -27,11 +27,11 @@ jobs:
           #dotnet-version: ${{ env.DOTNET_VERSION }}
           dotnet-version: '6.0.x'
 
-      - name: Install Azure Functions workload
-        run: dotnet workload install microsoft-net-sdk-functions
-      
       - name: Install Azure Functions Core Tools
         run: npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
+      - name: Install Microsoft.NET.Sdk.Functions NuGet package
+        run: dotnet add ./sparklin/OpenLineage/OpenLineage/Openlineage.csproj package Microsoft.NET.Sdk.Functions
 
       - name: Publish Azure Function
         run: dotnet publish ./sparklin/OpenLineage/OpenLineage/Openlineage.csproj --configuration Release --output ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
