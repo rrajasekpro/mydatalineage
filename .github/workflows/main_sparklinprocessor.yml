@@ -1,4 +1,4 @@
-name: Build and deploy dotnet core app to Azure Function App - sparklinprocessor
+name: Build and deploy .NET Azure Function App - sparklinprocessor
 
 on:
   push:
@@ -18,18 +18,15 @@ jobs:
       contents: read
 
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Install Microsoft.NET.Sdk.Functions
-        run: dotnet new install Microsoft.Azure.Functions.Worker.Sdk::1.10.0
-
-      - name: 'Resolve Project Dependencies Using Dotnet'
+      - name: Restore and build
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
@@ -44,9 +41,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1556FC6A02CD4ABD82D95C9D34CECFF4 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8DDAFB37CC454F18A4E69F2EA37424FD }}
 
-      - name: 'Run Azure Functions Action'
+      - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: 'sparklinprocessor'
           slot-name: 'Production'
