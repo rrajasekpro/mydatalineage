@@ -24,7 +24,8 @@ jobs:
       - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          #dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: '6.0.x'
           dotnet-quality: 'ga'
 
       - name: Restore and build
