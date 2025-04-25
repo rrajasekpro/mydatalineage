@@ -30,8 +30,8 @@ jobs:
       - name: Install Azure Functions Core Tools
         run: npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-      - name: Clean the build
-        run: dotnet clean ./sparklin/OpenLineage/OpenLineage/Openlineage.csproj
+      - name: Publish Azure Function
+        run: dotnet publish ./sparklin/OpenLineage/OpenLineage/Openlineage.csproj --configuration Release --output ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
        
       - name: Restore and build
         shell: pwsh
