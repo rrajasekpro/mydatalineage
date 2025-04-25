@@ -28,6 +28,9 @@ jobs:
           dotnet-version: '6.0.x'
           dotnet-quality: 'ga'
 
+      - name: Install Azure Functions
+        run: dotnet workload install azure-functions
+
       - name: install the sdk functions
         run: dotnet add "./sparklin/OpenLineage/OpenLineage/Openlineage.csproj" package Microsoft.NET.Sdk.Functions
 
