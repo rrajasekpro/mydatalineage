@@ -27,9 +27,6 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           dotnet-quality: 'ga'
 
-      - name: Install Azure Functions SDK
-        run: dotnet workload install microsoft-net-sdk-functions
-      
       - name: Restore and build
         shell: pwsh
         run: |
