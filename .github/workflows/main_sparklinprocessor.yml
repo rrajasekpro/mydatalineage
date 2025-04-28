@@ -1,4 +1,7 @@
-name: Build and deploy .NET Azure Function App - sparklinprocessor
+# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy dotnet core app to Azure Function App - sparklinprocessor
 
 on:
   push:
@@ -7,42 +10,34 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'sparklin/OpenLineage'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
     runs-on: windows-latest
-    permissions:
-      id-token: write
-      contents: read
-
+    
     steps:
-      - name: Checkout repository
+      - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v3
+      - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restore and build
+      - name: 'Resolve Project Dependencies Using Dotnet'
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet restore
-          dotnet build --configuration Release
+          dotnet build --configuration Release --output ./output
           popd
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_500FDC13760C44898B0475A9DFD74624 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1556FC6A02CD4ABD82D95C9D34CECFF4 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8DDAFB37CC454F18A4E69F2EA37424FD }}
-
-      - name: Deploy to Azure Functions
+      
+      - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
+        id: fa
         with:
           app-name: 'sparklinprocessor'
           slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D1B28E054F6B4D2C86246D8EB8DD17C1 }}
